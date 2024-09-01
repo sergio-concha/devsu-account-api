@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration monitorInterval="30">
+    <Properties>
+        <Property name="LOG_PATTERN">
+            %d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${hostName} --- [%15.15t] %-40.40c{1.} : %m%n%ex
+        </Property>
+        <Property name="log-path">/opt/logs</Property>
+        <Property name="archive">${log-path}/archive</Property>
+        <Property name="version">v1</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console-Appender" target="SYSTEM_OUT">
+            <PatternLayout>
+                <pattern>
+                    ${LOG_PATTERN}
+                </pattern>
+            </PatternLayout>
+        </Console>
+        <File name="File-Appender" fileName="${log-path}/file-devsu-account-${version}.log">
+            <PatternLayout>
+                <pattern>
+                    ${LOG_PATTERN}
+                </pattern>
+            </PatternLayout>
+        </File>
+    	<!-- Rolling File Appender -->
+        <RollingFile name="RollingFile-Appender"
+                 fileName="${log-path}/devsu-account-${version}.log"
+                 filePattern="${archive}/devsu-account-${version}.log.%d{yyyy-MM-dd-hh-mm}.gz">
+        	<PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                 <!--<TimeBasedTriggeringPolicy/>-->
+                 <SizeBasedTriggeringPolicy size="30000000"/>
+            </Policies>
+            <DefaultRolloverStrategy max="30000000"/>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Logger name="com.devsu.account" level="debug" additivity="false">
+            <!--<AppenderRef ref="File-Appender" level="debug"/>-->
+            <AppenderRef ref="Console-Appender" level="info"/>
+            <AppenderRef ref="RollingFile-Appender" level="debug"/>
+        </Logger>
+        <Root level="info">
+            <!--<AppenderRef ref="File-Appender"/>-->
+            <AppenderRef ref="Console-Appender"/>
+            <AppenderRef ref="RollingFile-Appender"/>
+        </Root>
+    </Loggers>	
+</Configuration>
